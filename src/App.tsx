@@ -1,13 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { 
-  Phone, 
-  MapPin, 
-  CalendarClock, 
-  QrCode, 
-  UserPlus, 
-  Star, 
-  Trophy, 
-  CheckCircle2, 
+import {
+  Phone,
+  MapPin,
+  CalendarClock,
+  QrCode,
+  UserPlus,
+  Star,
+  Trophy,
+  CheckCircle2,
   Bike,
   ChevronDown,
   HelpCircle,
@@ -51,7 +51,7 @@ const AnimatedCounter = ({ end, duration = 2500, decimals = 0 }: { end: number, 
     const performAnimation = (timestamp: number) => {
       if (!startTime) startTime = timestamp;
       const progress = timestamp - startTime;
-      
+
       if (progress < duration) {
         // Easing function: Ease-out expo para um efeito suave no final
         const percentage = 1 - Math.pow(2, -10 * (progress / duration));
@@ -74,6 +74,48 @@ export default function App() {
   const [currentReviewIndex, setCurrentReviewIndex] = useState(0);
   const [currentServiceIndex, setCurrentServiceIndex] = useState(0);
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(null);
+
+  // Swipe States
+  const [touchStart, setTouchStart] = useState<number | null>(null);
+  const [touchEnd, setTouchEnd] = useState<number | null>(null);
+  const minSwipeDistance = 50;
+
+  const onTouchStart = (e: React.TouchEvent) => {
+    setTouchEnd(null);
+    setTouchStart(e.targetTouches[0].clientX);
+  };
+
+  const onTouchMove = (e: React.TouchEvent) => {
+    setTouchEnd(e.targetTouches[0].clientX);
+  };
+
+  const onTouchEndServices = () => {
+    if (!touchStart || !touchEnd) return;
+    const distance = touchStart - touchEnd;
+    const isLeftSwipe = distance > minSwipeDistance;
+    const isRightSwipe = distance < -minSwipeDistance;
+
+    if (isLeftSwipe) {
+      setCurrentServiceIndex((prev) => (prev + 1) % SERVICES.length);
+    }
+    if (isRightSwipe) {
+      setCurrentServiceIndex((prev) => (prev - 1 + SERVICES.length) % SERVICES.length);
+    }
+  };
+
+  const onTouchEndReviews = () => {
+    if (!touchStart || !touchEnd) return;
+    const distance = touchStart - touchEnd;
+    const isLeftSwipe = distance > minSwipeDistance;
+    const isRightSwipe = distance < -minSwipeDistance;
+
+    if (isLeftSwipe) {
+      setCurrentReviewIndex((prev) => (prev + 1) % REVIEWS.length);
+    }
+    if (isRightSwipe) {
+      setCurrentReviewIndex((prev) => (prev - 1 + REVIEWS.length) % REVIEWS.length);
+    }
+  };
 
   // Auto-scroll carrossel de avaliações
   useEffect(() => {
@@ -99,7 +141,7 @@ export default function App() {
       alert("Geolocalização não suportada pelo seu navegador.");
       return;
     }
-    
+
     // Simple prompt to simulate "sending" location via WhatsApp
     navigator.geolocation.getCurrentPosition(
       (position) => {
@@ -135,7 +177,7 @@ FN:Marcos L33T Motoboy
 TEL;TYPE=CELL:${PHONE_NUMBER}
 NOTE:Motoboy Profissional - Rápido e Seguro
 END:VCARD`;
-    
+
     const blob = new Blob([vcard], { type: "text/vcard" });
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
@@ -145,7 +187,7 @@ END:VCARD`;
     link.click();
     document.body.removeChild(link);
     URL.revokeObjectURL(url);
-    
+
     setCopyFeedback("Contato salvo!");
     setTimeout(() => setCopyFeedback(null), 3000);
   };
@@ -165,15 +207,15 @@ END:VCARD`;
         <div className="relative z-10 flex flex-col items-center text-center">
           <div className="relative mb-4">
             <div className="w-24 h-24 rounded-full border-4 border-vr46-yellow overflow-hidden bg-slate-800 flex items-center justify-center shadow-[0_0_20px_rgba(232,246,37,0.6)]">
-               {/* Placeholder for Profile Image */}
-               <Bike size={48} className="text-white" />
+              {/* Placeholder for Profile Image */}
+              <Bike size={48} className="text-white" />
             </div>
             <div className="absolute -bottom-2 -right-2 bg-vr46-yellow text-vr46-blue text-xs font-bold px-2 py-1 rounded-full border-2 border-vr46-dark flex items-center">
               <Star size={12} className="mr-1 fill-vr46-blue" />
               <AnimatedCounter end={4.9} decimals={1} duration={2000} />
             </div>
           </div>
-          
+
           <h1 className="text-4xl font-racing italic mb-1 tracking-wide">
             MARCOS <span className="text-vr46-yellow">"L33T"</span>
           </h1>
@@ -181,54 +223,54 @@ END:VCARD`;
             Motoboy Profissional
           </p>
           <p className="text-xs text-slate-400 bg-black/30 px-3 py-1 rounded-full backdrop-blur-sm flex items-center">
-             <Trophy size={12} className="mr-1 text-vr46-yellow" /> 
-             <span><AnimatedCounter end={312} duration={2000} /> Avaliações</span>
+            <Trophy size={12} className="mr-1 text-vr46-yellow" />
+            <span><AnimatedCounter end={312} duration={2000} /> Avaliações</span>
           </p>
         </div>
       </header>
 
       {/* --- MAIN CONTENT --- */}
       <main className="px-4 -mt-4 relative z-20 space-y-6">
-        
+
         {/* FEEDBACK TOAST */}
         {copyFeedback && (
-           <div className="fixed top-4 left-1/2 transform -translate-x-1/2 bg-vr46-yellow text-vr46-dark font-bold px-6 py-3 rounded-full shadow-lg z-50 animate-slide-in flex items-center">
-             <CheckCircle2 className="mr-2" size={20}/>
-             {copyFeedback}
-           </div>
+          <div className="fixed top-4 left-1/2 transform -translate-x-1/2 bg-vr46-yellow text-vr46-dark font-bold px-6 py-3 rounded-full shadow-lg z-50 animate-slide-in flex items-center">
+            <CheckCircle2 className="mr-2" size={20} />
+            {copyFeedback}
+          </div>
         )}
 
         {/* --- BUTTONS --- */}
         <div className="space-y-3">
-          <ActionButton 
-            label="Chamar no WhatsApp" 
+          <ActionButton
+            label="Chamar no WhatsApp"
             subLabel="Resposta imediata"
-            icon={<Phone className="w-6 h-6" />} 
+            icon={<Phone className="w-6 h-6" />}
             onClick={handleWhatsApp}
             variant="primary"
           />
           <div className="grid grid-cols-2 gap-3">
-            <ActionButton 
-              label="Localização" 
-              icon={<MapPin className="w-5 h-5" />} 
+            <ActionButton
+              label="Localização"
+              icon={<MapPin className="w-5 h-5" />}
               onClick={handleLocation}
             />
-            <ActionButton 
-              label="Agendar" 
-              icon={<CalendarClock className="w-5 h-5" />} 
+            <ActionButton
+              label="Agendar"
+              icon={<CalendarClock className="w-5 h-5" />}
               onClick={handleSchedule}
             />
           </div>
           <div className="grid grid-cols-2 gap-3">
-             <ActionButton 
-              label="Pix / Pagar" 
-              icon={<QrCode className="w-5 h-5" />} 
+            <ActionButton
+              label="Pix / Pagar"
+              icon={<QrCode className="w-5 h-5" />}
               onClick={handlePix}
               variant="outline"
             />
-             <ActionButton 
-              label="Salvar Contato" 
-              icon={<UserPlus className="w-5 h-5" />} 
+            <ActionButton
+              label="Salvar Contato"
+              icon={<UserPlus className="w-5 h-5" />}
               onClick={handleVCard}
               variant="outline"
             />
@@ -239,8 +281,8 @@ END:VCARD`;
         <Section title="Sobre o Piloto">
           <div className="bg-slate-900/80 border-l-4 border-vr46-yellow p-4 rounded-r-lg shadow-lg backdrop-blur-sm">
             <p className="text-slate-300 leading-relaxed italic">
-              "Sou motoboy profissional, rápido, direto e sem enrolação. 
-              Trabalho com entregas urgentes, rotas locais e serviços particulares. 
+              "Sou motoboy profissional, rápido, direto e sem enrolação.
+              Trabalho com entregas urgentes, rotas locais e serviços particulares.
               Se precisar agora, chama que eu improviso rota."
             </p>
           </div>
@@ -249,13 +291,16 @@ END:VCARD`;
         {/* --- CATÁLOGO DE SERVIÇOS (CARROSSEL) --- */}
         <Section title="Meus Serviços">
           <div className="relative w-full overflow-hidden">
-            <div 
-              className="flex transition-transform duration-500 ease-out" 
+            <div
+              className="flex transition-transform duration-500 ease-out"
               style={{ transform: `translateX(-${currentServiceIndex * 100}%)` }}
+              onTouchStart={onTouchStart}
+              onTouchMove={onTouchMove}
+              onTouchEnd={onTouchEndServices}
             >
               {SERVICES.map((service) => (
                 <div key={service.id} className="min-w-full px-1">
-                  <button 
+                  <button
                     onClick={() => handleServiceClick(service.message)}
                     className="w-full group relative bg-slate-800 rounded-lg p-5 border border-slate-700 hover:border-vr46-yellow transition-all duration-300 text-left active:scale-[0.98] h-full"
                   >
@@ -264,7 +309,7 @@ END:VCARD`;
                         {service.icon}
                       </div>
                       <div className="flex-1">
-                         <h3 className="text-xl font-racing italic text-white group-hover:text-vr46-yellow transition-colors">
+                        <h3 className="text-xl font-racing italic text-white group-hover:text-vr46-yellow transition-colors">
                           {service.title}
                         </h3>
                         <span className="inline-block bg-slate-900/50 text-vr46-yellow text-[0.65rem] font-bold uppercase px-2 py-1 rounded border border-slate-700 mt-1">
@@ -273,12 +318,12 @@ END:VCARD`;
                       </div>
                     </div>
                     <div className="flex justify-between items-end">
-                       <p className="text-slate-400 text-sm leading-relaxed pr-8">
-                          {service.description}
-                        </p>
-                       <div className="bg-slate-700/50 p-2 rounded-full opacity-70 group-hover:opacity-100 group-hover:bg-vr46-yellow group-hover:text-vr46-dark transition-all duration-300">
-                          <ArrowRight className="w-5 h-5" />
-                       </div>
+                      <p className="text-slate-400 text-sm leading-relaxed pr-8">
+                        {service.description}
+                      </p>
+                      <div className="bg-slate-700/50 p-2 rounded-full opacity-70 group-hover:opacity-100 group-hover:bg-vr46-yellow group-hover:text-vr46-dark transition-all duration-300">
+                        <ArrowRight className="w-5 h-5" />
+                      </div>
                     </div>
                   </button>
                 </div>
@@ -291,11 +336,10 @@ END:VCARD`;
                 <button
                   key={idx}
                   onClick={() => setCurrentServiceIndex(idx)}
-                  className={`h-1.5 rounded-full transition-all duration-300 ${
-                    idx === currentServiceIndex 
-                      ? 'w-8 bg-vr46-yellow shadow-[0_0_10px_rgba(232,246,37,0.5)]' 
-                      : 'w-1.5 bg-slate-700 hover:bg-slate-600'
-                  }`}
+                  className={`h-1.5 rounded-full transition-all duration-300 ${idx === currentServiceIndex
+                    ? 'w-8 bg-vr46-yellow shadow-[0_0_10px_rgba(232,246,37,0.5)]'
+                    : 'w-1.5 bg-slate-700 hover:bg-slate-600'
+                    }`}
                   aria-label={`Ver serviço ${idx + 1}`}
                 />
               ))}
@@ -318,29 +362,32 @@ END:VCARD`;
         {/* --- ESTATISTICAS --- */}
         <Section>
           <div className="bg-vr46-yellow rounded-xl p-6 relative overflow-hidden text-vr46-dark shadow-[0_0_30px_rgba(232,246,37,0.15)]">
-             <div className="grid grid-cols-3 gap-4 text-center relative z-10">
-               {STATS.map((stat, idx) => (
-                 <div key={idx} className="flex flex-col items-center">
-                   <span className="text-2xl font-racing">
-                     <AnimatedCounter end={parseInt(stat.value)} duration={3000} />
-                   </span>
-                   <span className="text-[0.6rem] font-bold uppercase tracking-wider opacity-80">{stat.label}</span>
-                 </div>
-               ))}
-             </div>
-             {/* Decorative bike icon moved to end of DOM to prevent layout shifts on load */}
-             <div className="absolute -right-4 -bottom-8 opacity-10 pointer-events-none">
-               <Bike size={120} />
-             </div>
+            <div className="grid grid-cols-3 gap-4 text-center relative z-10">
+              {STATS.map((stat, idx) => (
+                <div key={idx} className="flex flex-col items-center">
+                  <span className="text-2xl font-racing">
+                    <AnimatedCounter end={parseInt(stat.value)} duration={3000} />
+                  </span>
+                  <span className="text-[0.6rem] font-bold uppercase tracking-wider opacity-80">{stat.label}</span>
+                </div>
+              ))}
+            </div>
+            {/* Decorative bike icon moved to end of DOM to prevent layout shifts on load */}
+            <div className="absolute -right-4 -bottom-8 opacity-10 pointer-events-none">
+              <Bike size={120} />
+            </div>
           </div>
         </Section>
 
         {/* --- AVALIAÇÕES --- */}
         <Section title="O que dizem">
           <div className="relative w-full overflow-hidden">
-            <div 
-              className="flex transition-transform duration-500 ease-out" 
+            <div
+              className="flex transition-transform duration-500 ease-out"
               style={{ transform: `translateX(-${currentReviewIndex * 100}%)` }}
+              onTouchStart={onTouchStart}
+              onTouchMove={onTouchMove}
+              onTouchEnd={onTouchEndReviews}
             >
               {REVIEWS.map((review) => (
                 <div key={review.id} className="min-w-full px-1">
@@ -356,44 +403,42 @@ END:VCARD`;
                     <div className="mt-4 pt-3 border-t border-slate-700/50 flex items-center justify-between">
                       <span className="text-sm font-bold uppercase text-vr46-yellow">{review.name}</span>
                       <div className="flex items-center text-slate-500 text-xs">
-                         <CheckCircle2 size={12} className="mr-1" />
-                         <span>Verificado</span>
+                        <CheckCircle2 size={12} className="mr-1" />
+                        <span>Verificado</span>
                       </div>
                     </div>
                   </div>
                 </div>
               ))}
             </div>
-            
+
             {/* Indicadores do Carrossel */}
             <div className="flex justify-center mt-4 gap-2">
               {REVIEWS.map((_, idx) => (
                 <button
                   key={idx}
                   onClick={() => setCurrentReviewIndex(idx)}
-                  className={`h-1.5 rounded-full transition-all duration-300 ${
-                    idx === currentReviewIndex 
-                      ? 'w-8 bg-vr46-yellow shadow-[0_0_10px_rgba(232,246,37,0.5)]' 
-                      : 'w-1.5 bg-slate-700 hover:bg-slate-600'
-                  }`}
+                  className={`h-1.5 rounded-full transition-all duration-300 ${idx === currentReviewIndex
+                    ? 'w-8 bg-vr46-yellow shadow-[0_0_10px_rgba(232,246,37,0.5)]'
+                    : 'w-1.5 bg-slate-700 hover:bg-slate-600'
+                    }`}
                   aria-label={`Ir para avaliação ${idx + 1}`}
                 />
               ))}
             </div>
           </div>
         </Section>
-        
+
         {/* --- FAQ --- */}
         <Section title="Dúvidas Frequentes">
           <div className="space-y-3">
             {FAQ_ITEMS.map((item, index) => (
-              <div 
+              <div
                 key={index}
-                className={`bg-slate-800 rounded-lg overflow-hidden border transition-all duration-300 ${
-                  openFaqIndex === index ? 'border-vr46-yellow shadow-[0_0_10px_rgba(232,246,37,0.15)]' : 'border-slate-700'
-                }`}
+                className={`bg-slate-800 rounded-lg overflow-hidden border transition-all duration-300 ${openFaqIndex === index ? 'border-vr46-yellow shadow-[0_0_10px_rgba(232,246,37,0.15)]' : 'border-slate-700'
+                  }`}
               >
-                <button 
+                <button
                   onClick={() => toggleFaq(index)}
                   className="w-full flex items-center justify-between p-4 text-left focus:outline-none"
                 >
@@ -403,14 +448,13 @@ END:VCARD`;
                       {item.question}
                     </span>
                   </div>
-                  <ChevronDown 
-                    className={`w-5 h-5 text-slate-500 transition-transform duration-300 ${openFaqIndex === index ? 'rotate-180 text-vr46-yellow' : ''}`} 
+                  <ChevronDown
+                    className={`w-5 h-5 text-slate-500 transition-transform duration-300 ${openFaqIndex === index ? 'rotate-180 text-vr46-yellow' : ''}`}
                   />
                 </button>
-                <div 
-                  className={`px-4 text-slate-400 text-sm leading-relaxed overflow-hidden transition-all duration-300 ease-in-out ${
-                    openFaqIndex === index ? 'max-h-40 pb-4 opacity-100' : 'max-h-0 opacity-0'
-                  }`}
+                <div
+                  className={`px-4 text-slate-400 text-sm leading-relaxed overflow-hidden transition-all duration-300 ease-in-out ${openFaqIndex === index ? 'max-h-40 pb-4 opacity-100' : 'max-h-0 opacity-0'
+                    }`}
                 >
                   <p className="border-t border-slate-700/50 pt-3 pl-8">
                     {item.answer}
@@ -426,9 +470,9 @@ END:VCARD`;
       {/* --- FOOTER --- */}
       <footer className="mt-12 text-center pb-8 opacity-60">
         <div className="flex items-center justify-center space-x-2 mb-2">
-           <div className="h-[1px] w-8 bg-slate-600"></div>
-           <Bike size={16} className="text-slate-500"/>
-           <div className="h-[1px] w-8 bg-slate-600"></div>
+          <div className="h-[1px] w-8 bg-slate-600"></div>
+          <Bike size={16} className="text-slate-500" />
+          <div className="h-[1px] w-8 bg-slate-600"></div>
         </div>
         <p className="text-[0.6rem] uppercase tracking-widest text-slate-500">
           Powered by <span className="text-slate-300 font-bold">INSIGHT / BILL</span>
