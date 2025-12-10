@@ -3,7 +3,7 @@ import { BadgeCheck, MapPin, Clock, Zap, CreditCard, Package, FileText, Shopping
 import { Review, Stat, Badge, FaqItem, ServiceItem } from './types';
 
 // Phone number for WhatsApp actions (example placeholder)
-export const PHONE_NUMBER = "5511999999999"; 
+export const PHONE_NUMBER = "5575982913786";
 export const PIX_KEY = "marcos.l33T.moto@exemplo.com";
 
 export const REVIEWS: Review[] = [
