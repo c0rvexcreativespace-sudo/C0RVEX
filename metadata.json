@@ -1,0 +1,7 @@
+{
+  "name": "Marcos L33T - Motoboy Pro",
+  "description": "Minisite PWA para motoboy profissional com estilo racing VR46.",
+  "requestFramePermissions": [
+    "geolocation"
+  ]
+}
