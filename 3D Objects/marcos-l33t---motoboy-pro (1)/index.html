@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Marcos L33T - Motoboy Profissional</title>
+    <meta name="theme-color" content="#020617" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Racing+Sans+One&family=Roboto:ital,wght@0,400;0,700;1,400;1,900&display=swap" rel="stylesheet">
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              vr46: {
+                yellow: '#E8F625', // Neon yellow/green
+                blue: '#003399',   // Yamaha/VR46 Blue
+                dark: '#020617',   // Asphalt dark
+                gray: '#1e293b',
+              }
+            },
+            fontFamily: {
+              racing: ['"Racing Sans One"', 'cursive'],
+              sans: ['"Roboto"', 'sans-serif'],
+            },
+            animation: {
+              'speed-pulse': 'pulse 1s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+              'slide-in': 'slideIn 0.5s ease-out forwards',
+            },
+            keyframes: {
+              slideIn: {
+                '0%': { transform: 'translateX(-100%)', opacity: '0' },
+                '100%': { transform: 'translateX(0)', opacity: '1' },
+              }
+            }
+          }
+        }
+      }
+    </script>
+    <style>
+      body {
+        background-color: #020617;
+        color: white;
+      }
+      .skew-stripes {
+        background: repeating-linear-gradient(
+          45deg,
+          #1e293b,
+          #1e293b 10px,
+          #0f172a 10px,
+          #0f172a 20px
+        );
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/index.tsx"></script>
+  </body>
+</html>
